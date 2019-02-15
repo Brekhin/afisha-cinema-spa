@@ -1,27 +1,41 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {Link} from "react-router-dom";
+import axios from 'axios';
+import Api from "./API/Conf";
+import * as Path from './API/URL';
 
 class App extends Component {
-  render() {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      movies: [],
+      moviesAPI: Path.MOVIES
+    };
+  }
+
+  componentDidMount() {
+    Api.get(Path.MOVIES)
+      .then(res => {
+        const movies = res.data;
+        this.setState({ movies });
+        console.log(res);
+      });
+  }
+
+render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+        <tbody>
+            {this.state.movies.map(c =>
+              <tr>
+                <td>{c.movieId} {c.name}</td>
+                <td>{c.duration}</td>
+                <Link to={Path.MOVIES + '/' + c.movieId}>Сеансы</Link>
+              </tr>
+            )}
+          </tbody>
+    )
   }
 }
 
